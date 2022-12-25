@@ -14,4 +14,6 @@ main()
     size_t i;
     for(i = 0; i < strlen(first_line); i++)
         assert(response->content->content[i] == first_line[i]);
+
+    free_response(&response);
 }

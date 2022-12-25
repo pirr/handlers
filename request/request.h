@@ -38,5 +38,5 @@ typedef struct Response Response;
 
 Request *init_request(HttpMethod method, Url *url, Buffer *body, Buffer *headers, int timeout);
 Response *make_request(Request *request);
-void free_request(Request *request);
-void free_response(Response *response);
+void free_request(Request **request);
+void free_response(Response **response);

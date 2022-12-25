@@ -13,4 +13,4 @@ typedef struct Buffer Buffer;
 
 Buffer *buffer_alloc(int size);
 int buffer_append(Buffer *buf, char *append, int length);
-void bufer_free(Buffer *);
+void bufer_free(Buffer **);

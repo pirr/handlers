@@ -20,7 +20,7 @@ get_url(char *url_string, size_t size)
 
     if ((url->protocol = buffer_alloc(MIN_PROTOCOL_SIZE)) == NULL) {
         fprintf(stderr, "Url protocol allocation error\n");
-        free_url(url);
+        free_url(&url);
         return NULL;
     }
 
@@ -31,7 +31,7 @@ get_url(char *url_string, size_t size)
         data[0] = *url_string;
         if (buffer_append(url->protocol, data, 1) == -1) {
             fprintf(stderr, "Url protocol append error\n");
-            free_url(url);
+            free_url(&url);
             return NULL;
         }
         url_string++;
@@ -39,7 +39,7 @@ get_url(char *url_string, size_t size)
 
     if (strcmp(url->protocol->content, "http") != 0 & strcmp(url->protocol->content, "https") != 0) {
         fprintf(stderr, "Use unknown protocol: %s\n", url->protocol->content);
-        free_url(url);
+        free_url(&url);
         return NULL;
     }
 
@@ -51,7 +51,7 @@ get_url(char *url_string, size_t size)
 
     if ((url->host = buffer_alloc(s)) == NULL) {
         fprintf(stderr, "Url host allocate error\n");
-        free_url(url);
+        free_url(&url);
         return NULL;
     }
 
@@ -59,7 +59,7 @@ get_url(char *url_string, size_t size)
         data[0] = *url_string;
         if (buffer_append(url->host, data, 1) == -1) {
             fprintf(stderr, "Url host append error\n");
-            free_url(url);
+            free_url(&url);
             return NULL;
         }
         url_string++;
@@ -73,7 +73,7 @@ get_url(char *url_string, size_t size)
     if (*url_string != '\0') {
         if ((url->path = buffer_alloc(s)) == NULL) {
             fprintf(stderr, "Url path alloc error\n");
-            free_url(url);
+            free_url(&url);
             return NULL;
         }
     }
@@ -82,7 +82,7 @@ get_url(char *url_string, size_t size)
         data[0] = *url_string;
         if ((buffer_append(url->path, data, 1) == -1)) {
             fprintf(stderr, "Url path append error\n");
-            free_url(url);
+            free_url(&url);
             return NULL;
         }
         url_string++;
@@ -92,18 +92,18 @@ get_url(char *url_string, size_t size)
 }
 
 void
-free_url(Url *url)
+free_url(Url **url)
 {
-    if (url->host != NULL)
-        free(url->host);
+    if ((*url)->host != NULL)
+        bufer_free(&(*url)->host);
     
-    if (url->path != NULL)
-        free(url->path);
+    if ((*url)->path != NULL)
+        bufer_free(&(*url)->path);
     
-    if (url->protocol != NULL)
-        free(url->protocol);
+    if ((*url)->protocol != NULL)
+        bufer_free(&(*url)->protocol);
 
-    free(url);
+    free(*url);
     
-    url = NULL;
+    *url = NULL;
 }

@@ -96,21 +96,38 @@ make_request(Request *request)
 }
 
 void
-free_request(Request *request)
+free_request(Request **request)
 {
-    if (request == NULL)
+    if (*request == NULL)
         return;
     
-    if (request->url != NULL)
-        free(request->url);
+    if ((*request)->url != NULL)
+        free_url(&(*request)->url);
 
-    if (request->body != NULL)
-        free(request->body);
+    if ((*request)->body != NULL)
+        bufer_free(&(*request)->body);
 
-    if (request->headers != NULL)
-        free(request->headers);
+    if ((*request)->headers != NULL)
+        bufer_free(&(*request)->headers);
 
-    free(request);
+    free(*request);
 
     request = NULL;
+}
+
+void
+free_response(Response **response)
+{
+    if (*response == NULL)
+        return;
+    
+    if ((*response)->request != NULL)
+        free_request(&(*response)->request);
+
+    if ((*response)->content != NULL)
+        bufer_free(&(*response)->content);
+
+    free(*response);
+
+    response = NULL;
 }

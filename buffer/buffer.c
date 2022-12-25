@@ -56,8 +56,9 @@ buffer_append(Buffer *buf, char *append, int size)
 }
 
 void
-bufer_free(Buffer *buf)
+bufer_free(Buffer **buf)
 {
-    free(buf->content);
-    free(buf);
+    free((*buf)->content);
+    free(*buf);
+    *buf = NULL;
 }

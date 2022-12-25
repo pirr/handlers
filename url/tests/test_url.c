@@ -8,5 +8,6 @@ main()
     Url *url = get_url(url_string, strlen(url_string));
     assert(strcmp(url->protocol->content, "http") == 0);
     assert(strcmp(url->host->content, "example.com") == 0);
-    free(url);
+    free_url(&url);
+    assert(url == NULL);
 }

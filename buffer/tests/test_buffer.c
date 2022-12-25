@@ -18,5 +18,6 @@ main()
     assert(buf->total_size == 13);
     assert(buf->content[13] == '\0');
     
-    bufer_free(buf);
+    bufer_free(&buf);
+    assert(buf == NULL);
 }

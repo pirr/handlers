@@ -11,4 +11,4 @@ struct Url {
 typedef struct Url Url;
 
 Url *get_url(char *url_string, size_t size);
-void free_url(Url *url);
+void free_url(Url **url);
