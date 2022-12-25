@@ -6,21 +6,20 @@ Url *
 get_url(char *url_string, size_t size)
 {
     if (size <= MIN_PROTOCOL_SIZE + 2) {
-        fprintf(stderr, "Url should have protocol and host at least");
+        fprintf(stderr, "Url should have protocol and host at least\n");
         return NULL;
     }
 
     Url *url;
     char data[2] = "\0";
 
-
     if ((url = (Url *) malloc(sizeof(Url))) == NULL) {
-        fprintf(stderr, "Can't allocate Url");
+        fprintf(stderr, "Can't allocate Url\n");
         return NULL;
     }
 
     if ((url->protocol = buffer_alloc(MIN_PROTOCOL_SIZE)) == NULL) {
-        fprintf(stderr, "Url protocol allocation error");
+        fprintf(stderr, "Url protocol allocation error\n");
         free_url(url);
         return NULL;
     }
@@ -28,55 +27,65 @@ get_url(char *url_string, size_t size)
     url->host = NULL;
     url->path = NULL;
     
-    while(*url_string != '/') {
-        data[0] = *url_string++;
+    while(*url_string != ':') {
+        data[0] = *url_string;
         if (buffer_append(url->protocol, data, 1) == -1) {
-            fprintf(stderr, "Url protocol append error");
+            fprintf(stderr, "Url protocol append error\n");
             free_url(url);
             return NULL;
         }
+        url_string++;
     }
 
     if (strcmp(url->protocol->content, "http") != 0 & strcmp(url->protocol->content, "https") != 0) {
-        fprintf(stderr, "Use unknown protocol: %s", url->protocol->content);
+        fprintf(stderr, "Use unknown protocol: %s\n", url->protocol->content);
         free_url(url);
         return NULL;
     }
+
+
+    while(*url_string == '/' || *url_string == ':')
+        url_string++;
 
     size_t s = size - url->protocol->bytes_used;
 
     if ((url->host = buffer_alloc(s)) == NULL) {
-        fprintf(stderr, "Url host allocate error");
+        fprintf(stderr, "Url host allocate error\n");
         free_url(url);
         return NULL;
     }
 
-    while(*url_string != '/' || *url_string != '\0') {
-        data[0] = *url_string++;
+    while((*url_string != '/') && (*url_string != '\0')) {
+        data[0] = *url_string;
         if (buffer_append(url->host, data, 1) == -1) {
-            fprintf(stderr, "Url host append error");
+            fprintf(stderr, "Url host append error\n");
             free_url(url);
             return NULL;
         }
+        url_string++;
     }
     
     s -= url->host->bytes_used;
 
-    if (*++url_string != '\0')
+    while(*url_string == '/')
+        url_string++;
+
+    if (*url_string != '\0') {
         if ((url->path = buffer_alloc(s)) == NULL) {
-            fprintf(stderr, "Url path alloc error");
+            fprintf(stderr, "Url path alloc error\n");
             free_url(url);
             return NULL;
         }
-    
+    }
 
     while(*url_string != '\0') {
-        data[0] = *url_string++;
+        data[0] = *url_string;
         if ((buffer_append(url->path, data, 1) == -1)) {
-            fprintf(stderr, "Url path append error");
+            fprintf(stderr, "Url path append error\n");
             free_url(url);
             return NULL;
         }
+        url_string++;
     }
 
     return url;
